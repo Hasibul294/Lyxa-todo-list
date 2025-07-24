@@ -1,1 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=Mona+Sans:ital,wght@0,200..900;1,200..900&display=swap');
+
 @import 'tailwindcss';
+
+@theme {
+  --color-mainBackgroundColor: #efefef;
+  --color-columnBackgroundColor: #161c22;
+  --font-sans: 'Mona Sans', sans-serif;
+  --font-serif: 'DM Serif Text', serif;
+}
+
+html,
+body {
+  background-color: #efefef;
+  color: #161c22;
+}
