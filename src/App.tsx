@@ -1,5 +1,12 @@
 function App() {
-  return <div className="text-4xl">This is LYXA todo list</div>;
+  return (
+    <>
+      <div>
+        <h1>Kanban Style Board for LYXA</h1>
+        <button>Add Column</button>
+      </div>
+    </>
+  );
 }
 
 export default App;
