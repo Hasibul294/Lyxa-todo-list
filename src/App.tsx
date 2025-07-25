@@ -39,7 +39,7 @@ function App() {
               Add Column <PlusIcon />
             </button>
           </div>
-          <MainBoard columns={columns} deleteColumn={deleteColumn} />
+          <MainBoard columns={columns} deleteColumn={deleteColumn} setColumns={setColumns} />
         </div>
       </DndContext>
     </main>

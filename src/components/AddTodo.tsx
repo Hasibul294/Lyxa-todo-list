@@ -21,7 +21,6 @@ export function AddTodo({ onAddTodo }: AddTodoProps) {
       title: title.trim(),
       description: description.trim(),
       status: 'New',
-      createdAt: new Date(),
     };
 
     onAddTodo(newTodo);
