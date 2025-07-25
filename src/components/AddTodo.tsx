@@ -33,16 +33,16 @@ export function AddTodo({ onAddTodo }: AddTodoProps) {
     return (
       <button
         onClick={() => setIsAdding(true)}
-        className="w-full p-2 flex items-center justify-center text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+        className="w-full py-2 flex items-center justify-center text-gray-600 hover:bg-gray-100 rounded-lg transition-colors border-2 border-dashed border-gray-300"
       >
         <PlusIcon className="w-5 h-5 mr-2" />
-        Add Todo
+        Add New Todo
       </button>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 bg-white rounded-lg shadow-sm">
+    <form onSubmit={handleSubmit} className="bg-white rounded-lg">
       <input
         type="text"
         value={title}

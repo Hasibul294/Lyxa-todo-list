@@ -61,8 +61,6 @@ const ColumnContainer = (props: ColumnContainerProps) => {
 
       {/* Column Content */}
       <div className="flex flex-col flex-grow gap-4 p-2 overflow-x-hidden overflow-y-auto">
-        {column.title === 'New' && onAddTodo && <AddTodo onAddTodo={onAddTodo} />}
-
         <div className="flex flex-col gap-2">
           {column.items.map((todo) => (
             <div key={todo.id} className="relative">
@@ -71,6 +69,13 @@ const ColumnContainer = (props: ColumnContainerProps) => {
           ))}
         </div>
       </div>
+
+      {/* Add Todo Button at Bottom */}
+      {column.title === 'New' && onAddTodo && (
+        <div className="p-3 border-t-2 border-gray-100">
+          <AddTodo onAddTodo={onAddTodo} />
+        </div>
+      )}
     </div>
   );
 };
