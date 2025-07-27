@@ -14,8 +14,7 @@ interface TodoItemProps {
   columnId?: Id;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function TodoItem({ todo, isDragging, onStatusChange, index, columnId }: TodoItemProps) {
+export function TodoItem({ todo, onStatusChange, index, columnId }: TodoItemProps) {
   const {
     setNodeRef,
     attributes,
