@@ -65,6 +65,7 @@ const ColumnContainer = (props: ColumnContainerProps) => {
           <SortableContext
             items={column.items.map((item) => item.id)}
             strategy={verticalListSortingStrategy}
+            id={`column-${column.id}`}
           >
             {column.items.map((todo, index) => (
               <TodoItem

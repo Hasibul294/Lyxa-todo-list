@@ -59,10 +59,13 @@ export function TodoItem({ todo, onStatusChange, index, columnId }: TodoItemProp
         ref={setNodeRef}
         {...attributes}
         {...listeners}
-        style={style}
-        className={`p-2 rounded-lg shadow-sm bg-white mb-2 ${
-          dragging ? 'opacity-50' : ''
-        } group cursor-grab`}
+        style={{
+          ...style,
+          opacity: dragging ? 0.3 : 1,
+          position: 'relative',
+          transformOrigin: '0 0',
+        }}
+        className="p-2 rounded-lg shadow-sm bg-white mb-2 group cursor-grab"
       >
         <div className="flex items-center justify-between mb-2">
           <h3 className="text-base font-semibold">{todo.title}</h3>

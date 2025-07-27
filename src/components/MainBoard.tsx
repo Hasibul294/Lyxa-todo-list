@@ -7,6 +7,8 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  closestCenter,
+  MeasuringStrategy,
 } from '@dnd-kit/core';
 import { SortableContext, arrayMove } from '@dnd-kit/sortable';
 import type { Column, Id, Todo, TodoStatus } from '../types';
@@ -47,14 +49,21 @@ const MainBoard = ({ columns, deleteColumn, setColumns }: MainBoardProps) => {
   };
 
   const onDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    // Clear the drag state
     setActiveColumn(null);
     setActiveTodo(null);
 
-    const { active, over } = event;
-    if (!over) return;
+    if (!over) {
+      return;
+    }
 
-    if (active.id === over.id) return;
+    if (active.id === over.id) {
+      return;
+    }
 
+    // Handle column reordering
     if (active.data.current?.type === 'Column') {
       const activeColumnIndex = columns.findIndex((col) => col.id === active.id);
       const overColumnIndex = columns.findIndex((col) => col.id === over.id);
@@ -62,8 +71,10 @@ const MainBoard = ({ columns, deleteColumn, setColumns }: MainBoardProps) => {
       if (activeColumnIndex !== -1 && overColumnIndex !== -1) {
         setColumns(arrayMove(columns, activeColumnIndex, overColumnIndex));
       }
+      return;
     }
 
+    // Handle todo movement
     if (active.data.current?.type === 'Todo') {
       const { id: activeId } = active;
       const { id: overId } = over;
@@ -73,34 +84,49 @@ const MainBoard = ({ columns, deleteColumn, setColumns }: MainBoardProps) => {
 
       if (!activeColumnId || !overColumnId) return;
 
+      // Find source and destination columns
       const sourceColumn = columns.find((col) => col.id === activeColumnId);
       const destColumn = columns.find((col) => col.id === overColumnId);
 
       if (!sourceColumn || !destColumn) return;
 
+      // Find index
       const sourceTodoIndex = sourceColumn.items.findIndex((todo) => todo.id === activeId);
-      const destTodoIndex = destColumn.items.findIndex((todo) => todo.id === overId);
+      const destTodoIndex =
+        over.data.current?.type === 'Column'
+          ? destColumn.items.length
+          : destColumn.items.findIndex((todo) => todo.id === overId);
 
       if (sourceTodoIndex === -1) return;
 
+      // Create new columns array with updated items
       const newColumns = columns.map((col) => {
         // Remove from source column
         if (col.id === activeColumnId) {
           const newItems = [...col.items];
-          newItems.splice(sourceTodoIndex, 1);
+          const [todoToMove] = newItems.splice(sourceTodoIndex, 1);
+
+          // If same column, reinsert at new position
+          if (activeColumnId === overColumnId) {
+            const insertIndex = destTodoIndex > sourceTodoIndex ? destTodoIndex - 1 : destTodoIndex;
+            newItems.splice(insertIndex, 0, todoToMove);
+          }
+
           return { ...col, items: newItems };
         }
+
         // Add to destination column
-        if (col.id === overColumnId) {
+        if (col.id === overColumnId && activeColumnId !== overColumnId) {
           const newItems = [...col.items];
           const todoToMove = sourceColumn.items[sourceTodoIndex];
-          const indexToInsert = destTodoIndex >= 0 ? destTodoIndex : newItems.length;
-          newItems.splice(indexToInsert, 0, {
+          const insertIndex = destTodoIndex >= 0 ? destTodoIndex : newItems.length;
+          newItems.splice(insertIndex, 0, {
             ...todoToMove,
             status: col.title as TodoStatus,
           });
           return { ...col, items: newItems };
         }
+
         return col;
       });
 
@@ -236,6 +262,12 @@ const MainBoard = ({ columns, deleteColumn, setColumns }: MainBoardProps) => {
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
       onDragOver={onDragOver}
+      collisionDetection={closestCenter}
+      measuring={{
+        droppable: {
+          strategy: MeasuringStrategy.Always,
+        },
+      }}
     >
       <div className="mt-10 sm:mt-14 md:mt-16">
         <SortableContext items={columnsId}>
