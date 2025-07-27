@@ -1,6 +1,6 @@
 import DeleteIcon from '../icons/DeleteIcon';
 import type { Column, Id, Todo, TodoStatus } from '../types';
-import { useSortable } from '@dnd-kit/sortable';
+import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { getColumnStyles } from '../constants/columns.styles';
 import { TodoItem } from './TodoItem';
@@ -19,7 +19,7 @@ const ColumnContainer = (props: ColumnContainerProps) => {
   const { setNodeRef, attributes, listeners, transform, transition } = useSortable({
     id: column.id,
     data: {
-      type: 'column',
+      type: 'Column',
       column,
     },
   });
@@ -62,11 +62,20 @@ const ColumnContainer = (props: ColumnContainerProps) => {
       {/* Column Content */}
       <div className="flex flex-col flex-grow gap-4 p-2 overflow-x-hidden overflow-y-auto">
         <div className="flex flex-col gap-2">
-          {column.items.map((todo) => (
-            <div key={todo.id} className="relative">
-              <TodoItem todo={todo} onStatusChange={handleStatusChange} />
-            </div>
-          ))}
+          <SortableContext
+            items={column.items.map((item) => item.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            {column.items.map((todo, index) => (
+              <TodoItem
+                key={todo.id}
+                todo={todo}
+                onStatusChange={handleStatusChange}
+                index={index}
+                columnId={column.id}
+              />
+            ))}
+          </SortableContext>
         </div>
       </div>
 
